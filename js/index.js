@@ -89,7 +89,7 @@ const montaTabelaCarrinho = () => {
         txt += `<tr id="${"'" + produtos.indexOf(itensNaoRepetidos[i]) + 'idTrCarrinho' + "'"}">
                     <td>${itensNaoRepetidos[i].descricao}</td>
                     <td>${itensNaoRepetidos[i].segmento}</td>
-                    <td id=${"'" + produtos.indexOf(itensNaoRepetidos[i]) + 'idCarrinho' + "'"}><button class="btn btnAdd" id="${produtos.indexOf(itensNaoRepetidos[i]) + 'btnMenos'}" onclick="alteraQtdadeCarrinho(${produtos.indexOf(itensNaoRepetidos[i])}, '-')">-</button>${itensNaoRepetidos[i].quantity}<button class="btn btnAdd" id="${produtos.indexOf(itensNaoRepetidos[i]) + 'btnMais'}" onclick="alteraQtdadeCarrinho(${produtos.indexOf(itensNaoRepetidos[i])}, '+')">+</button></td>
+                    <td><button class="btn btnAdd" id="${produtos.indexOf(itensNaoRepetidos[i]) + 'btnMenos'}" onclick="alteraQtdadeCarrinho(${produtos.indexOf(itensNaoRepetidos[i])}, '-')">-</button><span id=${"'" + produtos.indexOf(itensNaoRepetidos[i]) + 'idCarrinho' + "'"}>${itensNaoRepetidos[i].quantity}</span><button class="btn btnAdd" id="${produtos.indexOf(itensNaoRepetidos[i]) + 'btnMais'}" onclick="alteraQtdadeCarrinho(${produtos.indexOf(itensNaoRepetidos[i])}, '+')">+</button></td>
                     <td>${itensNaoRepetidos[i].preco}</td>
                     <td><button class="btn btnAdd" onclick="removerProduto(${"'" + produtos.indexOf(itensNaoRepetidos[i]) + "'"})">Remover</button></td>
                 </tr>`
@@ -142,8 +142,7 @@ const alteraQtdadeCarrinho = (id, operacao) => {
     let item_carrinho_index = itensCarrinho.findIndex((obj => obj.descricao == new_produto.descricao));
     let quantidade = itensNaoRepetidos[item_carrinho_index].quantity
     let quantidadeTela = document.getElementById(id + 'idCarrinho') 
-
-
+    
     switch(operacao) {
         case '-':
             quantidade--
