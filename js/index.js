@@ -42,15 +42,23 @@ const adicionarCarrinho = (id) => {
     let quantidadeEstoque = parseInt(document.getElementById(`${id + 'idEstoque'}`).innerHTML)
     
     if(quantidadeEstoque > 0) {
-        itensCarrinho.push(produtos[id])
+        let new_produto = produtos[id]
+        let item_carrinho_index = itensCarrinho.findIndex((obj => obj.descricao == new_produto.descricao));
+        if (item_carrinho_index != -1) {
+            itensCarrinho[item_carrinho_index].quantity += 1
+        }
+        else {
+            new_produto.quantity = 1
+            itensCarrinho.push(new_produto)
+        }
+
         valorTotal.push(produtos[id].preco)
     }
-
-    // ------------
-    c(quantidadeEstoque)
+ 
     estoque.innerHTML = estoque - 1
     
     itensNaoRepetidos = [... new Set(itensCarrinho)]
+    
     alteraQtdade(id)
 }
 
@@ -78,19 +86,19 @@ const montaTabelaCarrinho = () => {
     let txt = ''
     
     for(let i = 0; i < itensNaoRepetidos.length; i++) {
-        txt += `<tr>
+        txt += `<tr id="${"'" + produtos.indexOf(itensNaoRepetidos[i]) + 'idTrCarrinho' + "'"}">
                     <td>${itensNaoRepetidos[i].descricao}</td>
                     <td>${itensNaoRepetidos[i].segmento}</td>
-                    <td id=${"'" + produtos.indexOf(itensNaoRepetidos[i]) + 'idCarrinho' + "'"}>${1}</td>
+                    <td id=${"'" + produtos.indexOf(itensNaoRepetidos[i]) + 'idCarrinho' + "'"}>${itensNaoRepetidos[i].quantity}</td>
                     <td>${itensNaoRepetidos[i].preco}</td>
-                    <td><button class="btn btnAdd" onclick="">Remover</button></td>
+                    <td><button class="btn btnAdd" onclick="removerProduto(${"'" + produtos.indexOf(itensNaoRepetidos[i]) + "'"})">Remover</button></td>
                 </tr>`
     }
 
     document.getElementById('tabelaCarrinho').innerHTML = txt;
 }
 
-  const mostraPorCategoria = (categoria) => {
+const mostraPorCategoria = (categoria) => {
     let produtosPorCategoria = []
     let txt = ''
     document.getElementById('divCategorias').classList.toggle('oculto')
@@ -110,4 +118,21 @@ const montaTabelaCarrinho = () => {
         </tr>`
     }
     document.getElementById('tabelaProdutosCategoria').innerHTML = txt;
-  }
+}
+
+const removerProduto = (id) => {
+    let new_produto = produtos[id]
+    let item_carrinho_index = itensCarrinho.findIndex((obj => obj.descricao == new_produto.descricao));
+    if (item_carrinho_index != -1) {
+        itensNaoRepetidos.pop(item_carrinho_index)
+    }
+    valorTotal.pop(produtos[id].preco)
+
+    let node = document.getElementById(`${"'" + id + 'idTrCarrinho' + "'"}`);
+    c(node)
+    if (node.parentNode) {
+    node.parentNode.removeChild(node);
+    }
+
+    montaTabelaCarrinho()
+}
