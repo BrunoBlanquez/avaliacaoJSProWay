@@ -1,5 +1,11 @@
 const c = console.log.bind(document)
 let produtos = []
+let carrinho = []
+let itemEscolhido = []
+let itensCarrinho = []
+let itensNaoRepetidos = []
+let valorTotal = []
+
 if (localStorage.getItem('Produtos') != null) {
     produtos = JSON.parse(localStorage.getItem('Produtos'))
 }
@@ -8,7 +14,6 @@ const preencheTabela = () => {
     document.getElementById('divProdutos').classList.toggle('oculto')
     let txt = ''
 
-    let itensNaoRepetidos = []
     let itemSelecionado = []
     let arrayTemp = produtos
     
@@ -16,46 +21,74 @@ const preencheTabela = () => {
         let random = Math.floor(Math.random() * (30 - 1) + 1)
 
         itemSelecionado[i] = arrayTemp[random]
-        let itensNaoRepetidos = [... new Set(itemSelecionado)]
 
         if(itemSelecionado[i]) {
             txt += `<tr>
             <td>${itemSelecionado[i].descricao}</td>
             <td>${itemSelecionado[i].segmento}</td>
-            <td>${itemSelecionado[i].estoque}</td>
+            <td id=${"'" + produtos.indexOf(itemSelecionado[i]) + 'idEstoque' + "'"}>${itemSelecionado[i].estoque}</td>
             <td>${itemSelecionado[i].preco}</td>
-            <td><button class="btn btnAdd" onclick="adicionarCarrinho(${"'" + itemSelecionado[i].descricao + "'"})">Add</button></td>
+            <td><button class="btn btnAdd" onclick="adicionarCarrinho(${"'" + produtos.indexOf(itemSelecionado[i]) + "'"}), montaTabelaCarrinho()">Add</button></td>
             </tr>`
         }
     }
     document.getElementById('tabelaProdutos').innerHTML = txt;
+    montaTabelaCarrinho()
   }
 
-  const adicionarCarrinho = (nome) => {
-    let itemEscolhido = []
-    itemEscolhido.push(nome)
-    document.addEventListener('click', e => e.preventDefault())
-
-    let itemCarrinho;
+const adicionarCarrinho = (id) => {
+    itemEscolhido.push(id)
+    let estoque = document.getElementById(`${id + 'idEstoque'}`).innerHTML
+    let quantidadeEstoque = parseInt(document.getElementById(`${id + 'idEstoque'}`).innerHTML)
     
+    if(quantidadeEstoque > 0) {
+        itensCarrinho.push(produtos[id])
+        valorTotal.push(produtos[id].preco)
+    }
+
+    // ------------
+    c(quantidadeEstoque)
+    estoque.innerHTML = estoque - 1
+    
+    itensNaoRepetidos = [... new Set(itensCarrinho)]
+    alteraQtdade(id)
+}
+
+const alteraQtdade = (id) => {
+    let qtdAtualEstoque = document.getElementById( id + 'idEstoque').innerHTML
+    if(qtdAtualEstoque > 0) {
+        qtdAtualEstoque = document.getElementById( id + 'idEstoque').innerHTML -= 1
+    }
+
+}
+
+const montaTabelaCarrinho = () => {
+    let qtdProdSelecionados = document.getElementById('prodSelecionadosQtd')
+    let valorProdSelecionados = document.getElementById('prodSelecionadosPreco')
+
+    const initialValue = 0;
+    const sumWithInitial = valorTotal.reduce(
+        (previousValue, currentValue) => previousValue + currentValue,
+        initialValue
+        );
+
+    qtdProdSelecionados.innerHTML = itensNaoRepetidos.length
+    valorProdSelecionados.innerHTML = 'R$ ' + sumWithInitial.toFixed(2)
+
     let txt = ''
-    document.getElementById('divCarrinho').classList.remove('oculto')
-
     
-    for(let i = 0; i < produtos.length; i++) {
-        if(produtos[i].descricao == nome) {
-            txt += `<tr>
-            <td>${produtos[i].descricao}</td>
-            <td>${produtos[i].segmento}</td>
-            <td>${produtos[i].estoque}</td>
-            <td>${produtos[i].preco}</td>
-            <td><button class="btn btnAdd" onclick="adicionarCarrinho()">Add</button></td>
-            </tr>`
-        }
+    for(let i = 0; i < itensNaoRepetidos.length; i++) {
+        txt += `<tr>
+                    <td>${itensNaoRepetidos[i].descricao}</td>
+                    <td>${itensNaoRepetidos[i].segmento}</td>
+                    <td id=${"'" + produtos.indexOf(itensNaoRepetidos[i]) + 'idCarrinho' + "'"}>${1}</td>
+                    <td>${itensNaoRepetidos[i].preco}</td>
+                    <td><button class="btn btnAdd" onclick="">Remover</button></td>
+                </tr>`
     }
 
     document.getElementById('tabelaCarrinho').innerHTML = txt;
-  }
+}
 
   const mostraPorCategoria = (categoria) => {
     let produtosPorCategoria = []
@@ -74,13 +107,7 @@ const preencheTabela = () => {
         <td>${produtosPorCategoria[i].segmento}</td>
         <td>${produtosPorCategoria[i].estoque}</td>
         <td>${produtosPorCategoria[i].preco}</td>
-        <td><button class="btn btnAdd" onclick="adicionarCarrinho()">Add</button></td>
         </tr>`
     }
     document.getElementById('tabelaProdutosCategoria').innerHTML = txt;
-  }
-
-  const criaTabela = (array, idDiv) => {
-    let txt = ''
-    document.getElementById(`${idDiv}`).classList.toggle('oculto')
   }

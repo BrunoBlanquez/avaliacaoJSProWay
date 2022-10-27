@@ -15,6 +15,7 @@
 </head>
 <body>
     <main class="container">
+        <!-- <button class="btn btn-success" onclick="pegaDadosProdutos()">Grava produtos no LocalStorage</button> -->
         <div>
             <h1>Lista de produtos</h1>
             <button class="btn btn-success mb-3"  onclick="preencheTabela()">Exibir produtos</button>
@@ -43,9 +44,8 @@
                         <tr>
                             <th scope="col">Produto</th>
                             <th scope="col">Segmento</th>
-                            <th scope="col">Quantidade</th>
+                            <th scope="col">Estoque</th>
                             <th scope="col">Preço</th>
-                            <th scope="col">Adicionar</th>
                         </tr>
                     </thead>
                     <tbody id="tabelaProdutosCategoria">
@@ -56,13 +56,14 @@
         </div>
         <div class="carrinho">
             <h1>Carrinho de itens</h1>
-            <div class="oculto" id="divCarrinho">
+            <!-- <button class="btn btn-success mb-3" onclick="montaTabelaCarrinho()">Mostrar Carrinho</button> -->
+            <div class="" id="divCarrinho">
                 <table class="table table-bordered tableBody">
                     <thead>
                         <tr>
                             <th scope="col">Produto</th>
                             <th scope="col">Segmento</th>
-                            <th scope="col">Estoque</th>
+                            <th scope="col">Quantidade</th>
                             <th scope="col">Preço</th>
                             <th scope="col">Remover</th>
                         </tr>
@@ -73,7 +74,11 @@
                     <tfoot>
                         <tr>
                             <td colspan="2">Qtd de produtos selecionados: </td>
-                            <td id="prodSelecionados"></td>
+                            <td id="prodSelecionadosQtd"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Preço total: </td>
+                            <td id="prodSelecionadosPreco"></td>
                         </tr>
                     </tfoot>
                 </table>
